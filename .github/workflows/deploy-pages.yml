@@ -35,10 +35,18 @@ jobs:
           fi
           export NEXT_PUBLIC_SITE_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io${GITHUB_PAGES_BASE_PATH}"
           npm run build
+      - name: Stage GitHub Pages artifact
+        shell: bash
+        run: |
+          rm -rf pages-artifact
+          mkdir -p pages-artifact
+          cp -R dist/client/. pages-artifact/
+          touch pages-artifact/.nojekyll
+          test -f pages-artifact/index.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/client
+          path: pages-artifact
   deploy:
     environment:
       name: github-pages
