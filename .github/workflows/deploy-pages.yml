@@ -41,8 +41,14 @@ jobs:
           rm -rf pages-artifact
           mkdir -p pages-artifact
           cp -R dist/client/. pages-artifact/
+          REPOSITORY_NAME="${GITHUB_REPOSITORY#*/}"
+          if [[ -d "pages-artifact/$REPOSITORY_NAME/_next" ]]; then
+            cp -R "pages-artifact/$REPOSITORY_NAME/_next" pages-artifact/_next
+            rm -rf "pages-artifact/$REPOSITORY_NAME"
+          fi
           touch pages-artifact/.nojekyll
           test -f pages-artifact/index.html
+          test -d pages-artifact/_next
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
