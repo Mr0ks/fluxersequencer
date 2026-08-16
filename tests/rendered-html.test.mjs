@@ -13,6 +13,7 @@ test("exports the Fluxline sequencer as a static site", async () => {
   assert.match(html, /Roblox player/);
   assert.match(html, /REFERENCE AUDIO/);
   assert.match(html, /EVENT INSPECTOR/);
+  assert.match(html, /Audio splitter/);
   assert.match(html, />Quick</);
   assert.match(html, />Look</);
   assert.match(html, />FX</);
@@ -54,19 +55,47 @@ test("contains the AccelSystems export schema", async () => {
 });
 
 test("ships an importable readable Roblox player", async () => {
-  const [config, whitelist, server, client] = await Promise.all([
+  const [config, whitelist, boardBuilder, server, client] = await Promise.all([
     readFile(new URL("roblox/FluxlinePlayer/Config.luau", root), "utf8"),
     readFile(new URL("roblox/FluxlinePlayer/Whitelist.luau", root), "utf8"),
+    readFile(new URL("roblox/FluxlinePlayer/BoardBuilder.luau", root), "utf8"),
     readFile(new URL("roblox/FluxlinePlayer/Server.server.luau", root), "utf8"),
     readFile(new URL("roblox/FluxlinePlayer/Client.client.luau", root), "utf8"),
   ]);
   assert.match(config, /AllowExperienceOwner/);
   assert.match(whitelist, /GetRankInGroup/);
   assert.match(server, /OnServerInvoke/);
+  assert.match(server, /BoardBuilder\.EnsureBoard/);
+  assert.match(boardBuilder, /Instance\.new\("Part"\)/);
+  assert.match(boardBuilder, /Instance\.new\("SurfaceGui"\)/);
+  assert.match(boardBuilder, /FluxlineShowBoard/);
   assert.match(client, /selectSong/);
-  assert.doesNotMatch([config, whitelist, server, client].join("\n"), /obfuscator|loadstring/);
+  assert.doesNotMatch(client, /Instance\.new\("ScreenGui"\)/);
+  assert.doesNotMatch([config, whitelist, boardBuilder, server, client].join("\n"), /obfuscator|loadstring/);
   await Promise.all([
     access(new URL("public/roblox/FluxlinePlayer.rbxm", root)),
     access(new URL("public/roblox/FluxlinePlayer-source.zip", root)),
   ]);
+});
+
+test("timeline blocks resize from both sides and the play marker scrubs", async () => {
+  const [source, styles] = await Promise.all([
+    readFile(new URL("app/page.tsx", root), "utf8"),
+    readFile(new URL("app/globals.css", root), "utf8"),
+  ]);
+  assert.match(source, /onEventResizePointerDown/);
+  assert.match(source, /resize-handle left/);
+  assert.match(source, /resize-handle right/);
+  assert.match(source, /onPlayheadPointerDown/);
+  assert.match(source, /Move play marker/);
+  assert.match(styles, /cursor: ew-resize/);
+});
+
+test("includes a local chapter-to-MP3 and ZIP splitter", async () => {
+  const source = await readFile(new URL("app/AudioSplitter.tsx", root), "utf8");
+  assert.match(source, /parseChapters/);
+  assert.match(source, /Mp3Encoder/);
+  assert.match(source, /JSZip/);
+  assert.match(source, /Download ZIP/);
+  assert.match(source, /stays on this device/);
 });

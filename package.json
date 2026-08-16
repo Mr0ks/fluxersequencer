@@ -13,6 +13,8 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
   },
   "dependencies": {
+    "@breezystack/lamejs": "^1.2.7",
+    "jszip": "^3.10.1",
     "react": "19.2.6",
     "react-dom": "19.2.6"
   },

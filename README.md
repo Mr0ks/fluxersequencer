@@ -2,6 +2,8 @@
 
 Fluxline is a browser-based timeline editor for Flux lighting shows. It saves projects on the current device, loads reference audio, supports beat/bar snapping, and exports both native AccelSystems Luau and an extended layered Fluxline show.
 
+Timeline blocks can be moved or stretched from either edge. The orange play marker is draggable during playback, and reference audio follows the new play position.
+
 The Profile editor mirrors the capabilities found in the target Flux kit: beam intensity, gobo intensity, red, green, blue, hue, iris, pan, shutter, spin, and tilt. It also exposes Flux's Profile effect engines (`color`, `dim`, `fade`, `iris`, `movement`, `spin`, and `strobe`) with form, low/high, phase, groups, blocks, wings, blend, bounce, and reset controls.
 
 ## Run locally
@@ -38,8 +40,12 @@ Each event can target all, included, excluded, odd, or even profile numbers. It 
 
 On first use, Fluxline asks you to create a project, choose either the readable Fluxline board or the native AccelSystems board, and patch the first FLUX lighting group. Every later project uses the same short setup. When a block is selected, its inspector can move it to another group and, for Fluxline-board projects, select exact fixtures such as JDC1 1 or JDC1 3. Accel-board projects control the complete FLUX group; make a one-fixture FLUX group when native Accel playback must control only one unit.
 
-Use **Roblox player** to download `FluxlinePlayer.rbxm`. Import it into Studio and press Play once; it installs the board client and server modules. Edit `ServerScriptService.FluxlinePlayer.Config` to set user IDs, usernames, or group ranks. The full readable source is also downloadable from the site and stored in `roblox/FluxlinePlayer`.
+Use **Roblox player** to download `FluxlinePlayer.rbxm`. Import it into Studio and press Play; it creates `Workspace.FluxlineShowBoard`, a physical anchored Part with a SurfaceGui show picker. The board lists the shows in AccelSystems, starts the selected show through Accel's remotes, and includes a stop button. Move or resize the Part anywhere in your venue. Edit `ServerScriptService.FluxlinePlayer.Config` to set user IDs, usernames, or group ranks. The full readable source is also downloadable from the site and stored in `roblox/FluxlinePlayer`.
 
 ## Project storage
 
 Projects auto-save in browser storage on the current device. Use **Download backup** to create a portable `.fluxline.json` file and **Import project** to load it elsewhere. Reference audio stays local and must be selected again after reopening the browser.
+
+## Concert audio splitter
+
+Open **Audio splitter** in the top bar, paste YouTube-style chapters or custom timecodes, and choose a local MP3/audio file. Fluxline splits and re-encodes the audio in the browser at 192 kbps. Download any named section separately or download every section in one ZIP. Audio is never uploaded. GitHub Pages cannot read a YouTube video's private description or download its audio, so copy the public chapter list into the timecode box and provide your own local audio file.

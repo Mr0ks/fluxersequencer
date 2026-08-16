@@ -3,6 +3,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local packageFolder = script.Parent
 local Whitelist = require(packageFolder.Whitelist)
+local BoardBuilder = require(packageFolder.BoardBuilder)
+
+BoardBuilder.EnsureBoard()
 
 local remotes = ReplicatedStorage:FindFirstChild("FluxlinePlayerRemotes") or Instance.new("Folder")
 remotes.Name = "FluxlinePlayerRemotes"
@@ -23,13 +26,13 @@ authorize.OnServerInvoke = function(player, action, showName)
 	end
 	if typeof(action) ~= "string" or #action > 30 then return false, "Invalid action." end
 	if showName ~= nil and (typeof(showName) ~= "string" or #showName > 100) then return false, "Invalid show." end
-	print(("[Fluxline] %s approved for %s%s"):format(action, player.Name, showName and (" — " .. showName) or ""))
+	print(("[Fluxline] %s approved for %s%s"):format(action, player.Name, showName and (" - " .. showName) or ""))
 	return true
 end
 
 audit.OnServerEvent:Connect(function(player, action, showName)
 	if Whitelist.IsAllowed(player) then
-		print(("[Fluxline] %s: %s — %s"):format(player.Name, tostring(action), tostring(showName)))
+		print(("[Fluxline] %s: %s - %s"):format(player.Name, tostring(action), tostring(showName)))
 	end
 end)
 
